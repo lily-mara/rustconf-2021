@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>The Importance of Not Over-Optimizing in Rust</title>
+
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+
+    <link rel="stylesheet" href="dist/theme/black.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Fraunces"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=JetBrains+Mono"
+    />
+
+    <style type="text/css">
+      .reveal {
+        background-color: rgb(14, 10, 41);
+        font-family: "Fraunces";
+      }
+
+      pre > code {
+        font-family: "JetBrains Mono", monospace !important;
+      }
+
+      .reveal h2,
+      .reveal h1,
+      .reveal li {
+        color: rgb(240, 236, 232);
+      }
+
+      .hljs {
+        border: 2px solid rgb(39, 110, 138);
+      }
+
+      .reveal .hljs.has-highlights tr:not(.highlight-line) {
+        opacity: 0.3;
+      }
+
+      .code-wrapper code {
+        background-color: rgb(14, 10, 41);
+      }
+
+      .hljs-meta {
+        color: rgb(240, 236, 232) !important;
+      }
+
+      .hljs-keyword,
+      .hljs-symbol {
+        color: rgb(139, 12, 87) !important;
+      }
+
+      .hljs-title,
+      .hljs-built_in {
+        color: rgb(245, 167, 143) !important;
+      }
+    </style>
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h2>The Importance of Not Over-Optimizing in Rust</h2>
+          <h3>Lily Mara</h3>
+          <h3>RustConf 2021</h3>
+        </section>
+        <section>
+          <h1>Story time!</h1>
+        </section>
+        <section>
+          <h1>Meet Gene!</h1>
+        </section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers="|3">
+            #[derive(Deserialize)]
+            struct Data {
+                name: String,
+                value: u16,
+            }
+
+            let mut sum: u64 = 0;
+            for l in input.lines() {
+                let data: Data = serde_json::from_str(l).unwrap();
+                sum += data.value as u64;
+                sum += data.name.len() as u64;
+            }
+            sum
+          </code></pre>
+        </section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers="2,3">
+            #[derive(Deserialize)]
+            struct Data<'a> {
+                name: &'a str,
+                value: u16,
+            }
+            let mut sum: u64 = 0;
+            for l in input.lines() {
+                let data: Data = serde_json::from_str(l).unwrap();
+                sum += data.value as u64;
+                sum += data.name.len() as u64;
+            }
+            sum
+          </code></pre>
+        </section>
+
+        <!-- TODO: graph of only rust performance -->
+        <section><h1>graph</h1></section>
+
+        <!-- TODO: graph of rust vs Py performance -->
+        <section><h1>graph</h1></section>
+
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers>
+            #[derive(Deserialize)]
+            struct Data<'a> {
+                name: &'a str,
+                value: u16,
+            }
+          </code></pre>
+          <ul>
+            <li class="fragment">Lifetimes</li>
+            <li class="fragment">Generic arguments</li>
+            <li class="fragment">References</li>
+            <li class="fragment">Ownership</li>
+          </ul>
+        </section>
+
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers="1|6|5|11,12">
+            fn get_data_value<'a>(data: Data<'a>) -> u64 {
+                data.value as u64 + data.name.len() as u64
+            }
+
+            impl<'a> Data<'a> {
+                fn parse_json(input: &'a str) -> Data<'a> {
+                    serde_json::from_str(input).unwrap()
+                }
+            }
+
+            struct DataCollection<'a> {
+                data_values: Vec&lt;Data&lt;'a>>,
+            }
+          </code></pre>
+        </section>
+
+        <section><h1>😃</h1></section>
+        <section><h1>😕</h1></section>
+
+        <section>
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers>
+            fn remove_trailing_spaces(s: String) -> String {
+                s.trim_end().to_string()
+            }
+          </code></pre>
+
+          <pre
+            class="fragment"
+          ><code class="language-rust" data-trim data-noescape data-line-numbers>
+            fn remove_trailing_spaces(s: &str) -> &str {
+                s.trim_end()
+            }
+          </code></pre>
+        </section>
+
+        <section><h1>How does Rust Look to New Developers?</h1></section>
+        <section>
+          <h1>Tips for new Developers</h1>
+          <ul>
+            <li class="fragment">Use Owned values</li>
+            <li class="fragment">Use <code>.clone()</code></li>
+            <li class="fragment">Compile with <code>--release</code>!</li>
+          </ul>
+        </section>
+
+        <section><h1>Thank you!</h1></section>
+
+        <!-- TODO: book cover here -->
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+        transition: "fade",
+        controls: false,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealHighlight],
+      });
+    </script>
+  </body>
+</html>
