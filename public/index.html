@@ -36,6 +36,7 @@
       .reveal h1,
       .reveal li {
         color: rgb(240, 236, 232);
+        font-family: "Fraunces";
       }
 
       .hljs {
@@ -74,14 +75,17 @@
       <div class="slides">
         <section>
           <h2>The Importance of Not Over-Optimizing in Rust</h2>
-          <h3>Lily Mara</h3>
-          <h3>RustConf 2021</h3>
         </section>
         <section>
           <h1>Story time!</h1>
         </section>
         <section>
           <h1>Meet Gene!</h1>
+          <ul>
+            <li class="fragment">Python Developer</li>
+            <li class="fragment">Aggregating JSON</li>
+            <li class="fragment">Heard Rust is faster than Python</li>
+          </ul>
         </section>
         <section>
           <pre><code data-trim data-noescape data-line-numbers="|3">
@@ -100,6 +104,7 @@
             sum
           </code></pre>
         </section>
+
         <section>
           <pre><code data-trim data-noescape data-line-numbers="2,3">
             #[derive(Deserialize)]
@@ -107,6 +112,7 @@
                 name: &'a str,
                 value: u16,
             }
+
             let mut sum: u64 = 0;
             for l in input.lines() {
                 let data: Data = serde_json::from_str(l).unwrap();
@@ -159,24 +165,43 @@
         <section><h1>😕</h1></section>
 
         <section>
+          <h2>Did Gene have to learn these things right away?</h2>
+        </section>
+
+        <section>
+          Start with this
           <pre><code class="language-rust" data-trim data-noescape data-line-numbers>
             fn remove_trailing_spaces(s: String) -> String {
                 s.trim_end().to_string()
             }
           </code></pre>
 
-          <pre
-            class="fragment"
-          ><code class="language-rust" data-trim data-noescape data-line-numbers>
+          <div class="fragment">
+            Write this when you have to
+            <pre><code class="language-rust" data-trim data-noescape data-line-numbers>
             fn remove_trailing_spaces(s: &str) -> &str {
                 s.trim_end()
             }
           </code></pre>
+          </span>
         </section>
 
-        <section><h1>How does Rust Look to New Developers?</h1></section>
         <section>
-          <h1>Tips for new Developers</h1>
+          <h2>How does Rust Look to New Developers?</h2>
+        </section>
+
+        <section>
+          <h2>Naïve Rust is often "fast enough"</h2>
+          <ul>
+            <li class="fragment">Become productive faster</li>
+            <li class="fragment">Write code that's faster but not fastest</li>
+            <li class="fragment">Reduce developers leaving community</li>
+            <li class="fragment">Topics are not going anywhere</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>New Developers</h2>
           <ul>
             <li class="fragment">Use Owned values</li>
             <li class="fragment">Use <code>.clone()</code></li>
@@ -184,7 +209,11 @@
           </ul>
         </section>
 
-        <section><h1>Thank you!</h1></section>
+        <section>
+          <h1>Thank you!</h1>
+          <img data-src="./images/book-cover.png" />
+          <a href="https://manning.com/books/refactoring-to-rust">manning.com/books/refactoring-to-rust</a>
+        </section>
 
         <!-- TODO: book cover here -->
       </div>
