@@ -1,0 +1,4 @@
+#!/bin/sh
+
+gnuplot graphs/all.gnuplot
+mv out/*.png public/images/
