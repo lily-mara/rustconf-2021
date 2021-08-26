@@ -3,7 +3,9 @@ set terminal pngcairo enhanced font "Sans,25.0" size 1920,1080 background rgb '#
 
 set border lw 3 lc rgb "#f0ece8"
 
-set ylabel "Y" textcolor rgb "#f0ece8"
+set ylabel "Y" textcolor rgb "#f0ece8" font ",40"
+set key font ",40"
+set xtics font ",40"
 
 set style fill solid
 set key off
