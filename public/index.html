@@ -88,39 +88,23 @@
           </ul>
         </section>
         <section>
-          <pre><code data-trim data-noescape data-line-numbers="|3">
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers="|3">
             #[derive(Deserialize)]
             struct Data {
                 name: String,
                 value: u16,
             }
-
-            let mut sum: u64 = 0;
-            for l in input.lines() {
-                let data: Data = serde_json::from_str(l).unwrap();
-                sum += data.value as u64;
-                sum += data.name.len() as u64;
-            }
-            sum
           </code></pre>
         </section>
 
         <section>
-          <pre><code data-trim data-noescape data-line-numbers="2,3">
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers="2,3">
             #[derive(Deserialize)]
             struct Data<'a> {
                 name: &'a str,
                 value: u16,
             }
-
-            let mut sum: u64 = 0;
-            for l in input.lines() {
-                let data: Data = serde_json::from_str(l).unwrap();
-                sum += data.value as u64;
-                sum += data.name.len() as u64;
-            }
-            sum
-          </code></pre>
+         </code></pre>
         </section>
 
         <section><img data-src="./images/rust-only.png" /></section>
@@ -128,7 +112,7 @@
         <section><img data-src="./images/all.png" /></section>
 
         <section>
-          <pre><code data-trim data-noescape data-line-numbers>
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers>
             #[derive(Deserialize)]
             struct Data<'a> {
                 name: &'a str,
@@ -144,22 +128,52 @@
         </section>
 
         <section>
-          <pre><code data-trim data-noescape data-line-numbers="1|6|5|11,12">
-            fn get_data_value<'a>(data: Data<'a>) -> u64 {
-                data.value as u64 + data.name.len() as u64
-            }
+          Without Lifetimes
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers="1">
+          fn parse_json(input: &str) -> Data {
+              serde_json::from_str(input).unwrap()
+          }
+          </code></pre>
 
-            impl<'a> Data<'a> {
-                fn parse_json(input: &'a str) -> Data<'a> {
-                    serde_json::from_str(input).unwrap()
-                }
-            }
+          With Lifetimes
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers="1">
+          fn parse_json<'a>(input: &'a str) -> Data<'a> {
+              serde_json::from_str(input).unwrap()
+          }
+          </code></pre>
+       </section>
 
-            struct DataCollection<'a> {
-                data_values: Vec&lt;Data&lt;'a>>,
-            }
+        <section>
+          Without Lifetimes
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers="1">
+          impl Data {
+            ...
+          }
+          </code></pre>
+
+          With Lifetimes
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers="1">
+          impl<'a> Data<'a> {
+            ...
+          }
           </code></pre>
         </section>
+
+        <section>
+          Without Lifetimes
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers>
+          struct DataCollection {
+              data_values: Vec&lt;Data>,
+          }
+          </code></pre>
+
+          With Lifetimes
+          <pre><code class="language-rust" data-trim data-noescape data-line-numbers>
+          struct DataCollection<'a> {
+              data_values: Vec&lt;Data&lt;'a>>,
+          }
+          </code></pre>
+       </section>
 
         <section><h1>😃</h1></section>
         <section><h1>😕</h1></section>
@@ -205,6 +219,7 @@
           <ul>
             <li class="fragment">Use Owned values</li>
             <li class="fragment">Use <code>.clone()</code></li>
+            <li class="fragment">Use <code>Arc</code></li>
             <li class="fragment">Compile with <code>--release</code>!</li>
           </ul>
         </section>
